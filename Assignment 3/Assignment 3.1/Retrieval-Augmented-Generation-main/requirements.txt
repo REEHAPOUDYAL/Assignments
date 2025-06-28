@@ -1,0 +1,10 @@
+streamlit==1.36.0
+nltk==3.8.1
+pymilvus==2.2.1
+google-generativeai==0.7.0
+transformers==4.42.4
+torch==2.3.0
+gensim==4.3.2
+numpy==1.26.4
+bm25s==0.1.10
+scrapy==2.11.2
