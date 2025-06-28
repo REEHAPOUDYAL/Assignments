@@ -1,4 +1,4 @@
-Text Classification Fine-tuning with Transformers
+# Text Classification Fine-tuning with Transformers
 This repository contains my project focused on fine-tuning a pre-trained Transformer model for a text classification task. Specifically, I explore different fine-tuning techniques and analyze the critical trade-offs between model accuracy, training time, and memory usage.
 
 Project Overview
