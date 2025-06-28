@@ -1,23 +1,61 @@
-# Text Classification Fine-tuning with Transformers
-This repository contains my project focused on fine-tuning a pre-trained Transformer model for a text classification task. Specifically, I explore different fine-tuning techniques and analyze the critical trade-offs between model accuracy, training time, and memory usage.
+# Sentiment Analysis Fine-tuning Comparison
+This project explores and compares different fine-tuning strategies for pre-trained transformer models on a sentiment analysis task using the IMDb movie review dataset. The goal is to understand the trade-offs between model accuracy, training time, memory usage, and parameter efficiency across various fine-tuning approaches.
 
-Project Overview
-The goal of this project was to understand the practical aspects of adapting powerful pre-trained Large Language Models (LLMs) for specific downstream tasks. Text classification is a fundamental NLP problem, and fine-tuning offers a highly effective solution. I implemented and experimented with different approaches to fine-tuning, aiming to gain insights into how various techniques impact performance metrics and resource consumption.
+# Introduction
+Sentiment analysis is a fundamental task in Natural Language Processing (NLP) that involves classifying the emotional tone behind a piece of text. Pre-trained transformer models, such as BERT, RoBERTa, and DistilBERT, have achieved state-of-the-art results in various NLP tasks, including sentiment analysis. However, effectively adapting these large models to specific downstream tasks often requires fine-tuning.
 
-# Key Concepts & My Implementation
-Pre-trained Transformers: I utilized a pre-trained Transformer model (e.g., BERT, RoBERTa, or a similar model from Hugging Face's transformers library) as the foundation for my classification task. Leveraging these models allows for high performance without training from scratch.
+This project investigates four distinct fine-tuning methodologies:
 
-Fine-tuning: The core of this project involved adapting the pre-trained model to a new, specific dataset for text classification. This process involves continuing the training of the pre-trained model's weights on the target task.
+Full Fine-tuning: The standard approach where all parameters of the pre-trained model are updated.
 
-Text Classification: I applied the fine-tuned model to a classification task (e.g., sentiment analysis, intent classification, or topic classification). This involves assigning a predefined category label to a given piece of text.
+Frozen Feature Extraction: Only the newly added classification head is trained, while the pre-trained transformer backbone remains frozen.
 
-Dataset Preparation: I handled the necessary steps to prepare the text classification dataset, including tokenization (converting text into numerical tokens suitable for the Transformer model) and formatting data for batch processing.
+Low-Rank Adaptation (LoRA): A parameter-efficient fine-tuning technique that injects small, trainable matrices into the pre-trained model's layers.
 
-Training Loop Implementation: I set up a training loop using PyTorch (or TensorFlow, depending on the transformers backend) to manage the fine-tuning process, including forward passes, loss calculation, backpropagation, and optimization.
+Gradual Unfreezing: A progressive fine-tuning strategy where layers of the pre-trained model are unfrozen in stages during training.
 
-# Performance Analysis: A key aspect of this project was to analyze the trade-offs between:
+# Methodologies Explored
+Each fine-tuning method is implemented as a separate nn.Module class in PyTorch:
 
-Accuracy: Overall, the analysis highlighted that fine-tuning Transformer models can lead to high accuracy (up to ~93.42% in my experiments), but the performance is highly sensitive to the specific fine-tuning configuration and hyperparameters.
+FullFineTuningClassifier:
 
-Memory Usage: The computational memory (GPU memory) required during training.
-I investigated how different fine-tuning techniques (e.g., full fine-tuning, parameter-efficient fine-tuning like LoRA if explored, different learning rates, batch sizes) impacted these metrics.
+Updates all parameters of the distilbert-base-uncased model.
+
+Represents the baseline for performance but is typically resource-intensive.
+
+FrozenBackboneClassifier:
+
+Freezes the entire distilbert-base-uncased transformer.
+
+Trains only a small, custom classification head.
+
+Highly parameter-efficient and fast, but may sacrifice accuracy.
+
+LoRAClassifier:
+
+Implements LoRA by adding low-rank matrices to the query and value projections within the attention layers of distilbert-base-uncased.
+
+Only the LoRA parameters and the classification head are trainable.
+
+Offers a balance between efficiency and performance.
+
+GradualUnfreezingClassifier:
+
+Starts by freezing all transformer layers and gradually unfreezes the top layers during training.
+
+Aims to leverage pre-trained knowledge while allowing some task-specific adaptation.
+
+# Dataset
+The project utilizes the IMDb movie review dataset, which is commonly used for binary sentiment classification (positive/negative).
+
+Source: Loaded using the datasets library.
+
+Preprocessing: Tokenization is performed using AutoTokenizer from the transformers library, with a max_length of 256 and padding/truncation applied.
+
+Splitting: A subset of the dataset is used for faster experimentation:
+
+Training: 4000 samples
+
+Validation: 1000 samples (20% of initial training data)
+
+Test: 1000 samples
